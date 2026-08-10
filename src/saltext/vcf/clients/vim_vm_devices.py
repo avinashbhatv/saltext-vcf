@@ -224,18 +224,38 @@ _USB_CONTROLLER_TYPES = (
 
 
 def usb_controllers_list(opts, vm_id_or_name, profile=None):
-    """List USB controller devices (USB 2.0 and/or USB 3.x xHCI) on *vm*."""
+    """List USB controller devices (USB 2.0 and/or USB 3.x xHCI) on a VM.
+
+    Args:
+        opts: Salt ``__opts__``, used to resolve the vCenter/ESXi connection.
+        vm_id_or_name (str): The VM's ``moId`` or name.
+        profile (str, optional): Named connection profile. Defaults to None.
+
+    Returns:
+        list[dict]: One ``{"key", "label", "summary"}`` dict per USB
+        controller device found. Empty list if the VM has none.
+    """
     vm = _vm(opts, vm_id_or_name, profile=profile)
     return [_device_summary(d) for d in _devices(vm, _USB_CONTROLLER_TYPES)]
 
 
 def usb_controllers_remove(opts, vm_id_or_name, profile=None):
-    """Remove every USB controller device from *vm*. Returns the removed device summaries.
+    """Remove every USB controller device from a VM.
 
     Batches all removals into one ``ReconfigVM_Task`` call — the KB's
     reference PowerCLI script issues a separate task per device with a
     sleep in between, but a VM has at most one USB 2.0 and one USB 3.x
     controller, so batching is both faster and atomic.
+
+    Args:
+        opts: Salt ``__opts__``, used to resolve the vCenter/ESXi connection.
+        vm_id_or_name (str): The VM's ``moId`` or name.
+        profile (str, optional): Named connection profile. Defaults to None.
+
+    Returns:
+        list[dict]: One ``{"key", "label", "summary"}`` dict per USB
+        controller device that was removed. Empty list, and no
+        ``ReconfigVM_Task`` call, if the VM had none.
     """
     vm = _vm(opts, vm_id_or_name, profile=profile)
     targets = _devices(vm, _USB_CONTROLLER_TYPES)
@@ -255,9 +275,25 @@ def list_vms_with_usb_controllers(opts, profile=None):
 
     Mirrors the KB-316384 PowerCLI audit sweep (``Get-VM | ? {...}``), but
     across the whole inventory in one call rather than one VM at a time.
-    Each entry is ``{"vm", "moid", "connected", "devices"}``; *connected*
-    matches ``VirtualMachine.runtime.connectionState == "connected"``, the
-    same check the reference script makes before attempting a removal.
+
+    Args:
+        opts: Salt ``__opts__``, used to resolve the vCenter/ESXi connection.
+        profile (str, optional): Named connection profile. Defaults to None.
+
+    Returns:
+        list[dict]: One entry per VM that has at least one USB controller,
+        each shaped as::
+
+            {
+                "vm": str,          # VM name
+                "moid": str,        # VM moId
+                "connected": bool,  # runtime.connectionState == "connected"
+                "devices": list[dict],  # see usb_controllers_list
+            }
+
+        *connected* matches ``VirtualMachine.runtime.connectionState ==
+        "connected"``, the same check the reference script makes before
+        attempting a removal.
     """
     content = soap.content(opts, profile=profile)
     container = content.viewManager.CreateContainerView(
