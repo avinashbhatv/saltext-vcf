@@ -4,10 +4,6 @@
   Prism pilot (VCOPS ansible->salt migration): read the advanced option straight from the
   ibn-cm99-main.yml inventory instead of a hand-authored vcf-infra-data values.yaml.
 
-  Anchor (lab ibn-cm99, hardcoded for the pilot -- see GTOScripts/README.md "Open risks" #1/#6
-  for multi-lab parameterization):
-    all.children.ibn_cm99_vc1_c1n01_ibn_broadcom_net__vcenter.hosts."ibn-cm99-vc1.ibn.broadcom.net"
-
   vcenter_advanced_options in prism is a flat {key: value} map covering many vCenter advanced
   options; this resource only ever manages one key/value pair at a time, so `selected_key`
   picks which prism entry to surface. Not found in prism -> falls back to defaults.yaml as-is.

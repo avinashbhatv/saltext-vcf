@@ -4,10 +4,6 @@
   Prism pilot (VCOPS ansible->salt migration): read the DRS VM/host affinity rule straight
   from the ibn-cm99-main.yml inventory instead of a hand-authored vcf-infra-data values.yaml.
 
-  Anchor (lab ibn-cm99, hardcoded for the pilot -- see GTOScripts/README.md "Open risks" #1/#6
-  for multi-lab parameterization):
-    all.children.ibn_cm99_vc1_c1n01_ibn_broadcom_net__vccluster.hosts."ibn-cm99-vc1-c1"
-
   vccluster_affinity_rules.vm_host in prism is a dict of {rule_name: {...}} keyed by an
   arbitrary rule label; "vcenter_vms_to_deploy_hosts" is selected below. Field names match
   this resource 1:1 except prism's "affinity" maps to this resource's "affine".

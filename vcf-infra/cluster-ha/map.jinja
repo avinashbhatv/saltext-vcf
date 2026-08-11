@@ -4,10 +4,6 @@
   Prism pilot (VCOPS ansible->salt migration): read cluster HA settings straight from the
   ibn-cm99-main.yml inventory instead of a hand-authored vcf-infra-data values.yaml.
 
-  Anchor (lab ibn-cm99, hardcoded for the pilot -- see GTOScripts/README.md "Open risks" #1/#6
-  for multi-lab parameterization):
-    all.children.ibn_cm99_vc1_c1n01_ibn_broadcom_net__vccluster.hosts."ibn-cm99-vc1-c1"
-
   Field mapping vs prism's vccluster_ha (names differ, isolation_response has no prism
   equivalent so it always falls back to defaults.yaml):
     enable -> ha.enabled

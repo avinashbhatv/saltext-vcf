@@ -4,10 +4,6 @@
   Prism pilot (VCOPS ansible->salt migration): read the vCenter permission straight from the
   ibn-cm99-main.yml inventory instead of a hand-authored vcf-infra-data values.yaml.
 
-  Anchor (lab ibn-cm99, hardcoded for the pilot -- see GTOScripts/README.md "Open risks" #1/#6
-  for multi-lab parameterization):
-    all.children.ibn_cm99_vc1_c1n01_ibn_broadcom_net__vcenter.hosts."ibn-cm99-vc1.ibn.broadcom.net"
-
   vcenter_permissions in prism is a dict of {label: {object_name, principal|group, role}},
   and every current entry is scoped to "rootFolder" -- there is no genuinely cluster-scoped
   permission entry in prism yet. "azmgmt_username" (sddc-automation-api / Admin) is the closest
